@@ -1,15 +1,25 @@
 # EEPROM Writer
 
-A simple 28C16 EEPROM writer using Arduino Nano or Uno.
+A simple 28C16 EEPROM writer for Arduino Nano or Uno based on Ben Eater's [EEPROM programmer](https://github.com/beneater/eeprom-programmer).
 
-Features:
+This project includes:
+- An arduino project that accepts commands from the serial USB to read or write the EEPROM
+- A command line tool for Linux (might work on Mac?) written in C to read and write data files to the EEPROM
 
-- Command line tool to read/write EEPROM contents to/from data files or view EEPROM contents
-- Arduino Uno friendly (don't use pin 13 as output)
+The circuit is heavily based on Ben Eater's [circuit](https://www.youtube.com/watch?v=K88pgWhEb1M) with a few changes to make it more robust when using an Arduino Uno. The main changes are:
+
+- Don't use pin D13 for write enable (which is used by the Arduino Uno duuring boot). Instead we use the digital output of analog pins A0 to A2 to control the EEPROM chip enable, write enable and output enable pins.
+- Add 10k resistors to pull down the shift register inputs do they don't float wildly while the Arduino is starting
+- Add 10k resistors to pull up the enable pins of the EEPROM (chip enable, write enable and output enable) to make it more reliable (especially when arduino is starting up). 
+
+
+## Circuit
+
+<img src="/doc/schematic.png" width="400" alt="Schematic">
+
 
 <img src="/doc/breadboard.jpg" width="400" alt="Breadboard Photo">
 
-<img src="/doc/schematic.png" width="400" alt="Schematic">
 
 ## Command Line Tool
 
@@ -19,7 +29,9 @@ The available commands are:
 
 #### Show EEPROM contents
 
-Sends the contents of the EEPROM to the standard output formatted as traditional hexdump output.
+    eeprom dump [ADDRESS [LENGTH]]
+
+Sends the contents of the EEPROM to the standard output formatted as traditional hexdump output. Examples:
 
     ./eeprom dump              # the whole EEPROM
     ./eeprom dump 0 64         # 64 bytes starting at address 0
@@ -28,7 +40,9 @@ Sends the contents of the EEPROM to the standard output formatted as traditional
 
 #### Read EEPROM contents to file
 
-Reads the contents of the EEPROM and writes the data to a file.
+    eeprom read FILE [ADDRESS [LENGTH]]
+
+Reads the contents of the EEPROM and writes the data to a file. Examples:
 
     ./eeprom read file.bin           # the whole EEPROM
     ./eeprom read file.bin 0 64      # the first 64 bytes
@@ -37,15 +51,17 @@ Reads the contents of the EEPROM and writes the data to a file.
 
 #### Write file to EEPROM
 
-Writes the whole contents of a file to the EEPROM.
+    eeprom read FILE [ADDRESS]
+
+Writes the whole contents of a file to the EEPROM. Examples:
 
     ./eeprom write file.bin          # writes to start of the EEPROM
     ./eeprom write file.bin 0x400    # writes to the address 1024 (0x400)
 
 
-## Arduino Code
+## Arduino Project
 
-The Arduino code (found in `arduino/eeprom_writer`) waits for commands from the serial and executes them. The prompt
+The Arduino program (found in `arduino/eeprom_writer`) waits for commands from the serial and executes them. The prompt
 
     *READY
 
