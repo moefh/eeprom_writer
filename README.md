@@ -19,43 +19,28 @@ The available commands are:
 
 #### Show EEPROM contents
 
-Show the whole EEPROM:
+Sends the contents of the EEPROM to the standard output formatted as traditional hexdump output.
 
-    ./eeprom dump
-
-Show the first 64 bytes:
-
-    ./eeprom dump 0 64
-
-Show 128 (0x80) bytes starting at address 0x200:
-
-    ./eeprom dump 0x200 0x80
+    ./eeprom dump              # the whole EEPROM
+    ./eeprom dump 0 64         # 64 bytes starting at address 0
+    ./eeprom dump 0x200 0x80   # 128 bytes (0x80) starting at address 512 (0x200)
 
 
 #### Read EEPROM contents to file
 
-Read whole EEPROM to `file.bin`:
+Reads the contents of the EEPROM and writes the data to a file.
 
-    ./eeprom read file.bin
-
-Read the first 64 bytes of EEPROM to `file.bin`:
-
-    ./eeprom read file.bin 0 64
-
-Read 32 bytes of EEPROM starting from address 100 to `file.bin`:
-
-    ./eeprom read file.bin 100 32
+    ./eeprom read file.bin           # the whole EEPROM
+    ./eeprom read file.bin 0 64      # the first 64 bytes
+    ./eeprom read file.bin 100 0x20  # 32 bytes (0x20) starting at address 100
 
 
 #### Write file to EEPROM
 
-Write the contents of `file.bin` to the EEPROM starting at address 0:
+Writes the whole contents of a file to the EEPROM.
 
-    ./eeprom write file.bin
-
-Write the contents of `file.bin` to the EEPROM starting at address 0x400 (1024):
-
-    ./eeprom write file.bin 0x400
+    ./eeprom write file.bin          # writes to start of the EEPROM
+    ./eeprom write file.bin 0x400    # writes to the address 1024 (0x400)
 
 
 ## Arduino Code
