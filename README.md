@@ -8,7 +8,7 @@ This project includes:
 
 The circuit is heavily based on Ben Eater's [circuit](https://www.youtube.com/watch?v=K88pgWhEb1M) with a few changes to make it more robust when using an Arduino Uno. The main changes are:
 
-- Don't use pin D13 for write enable (which is used by the Arduino Uno duuring boot). Instead we use the digital output of analog pins A0 to A2 to control the EEPROM chip enable, write enable and output enable pins.
+- Don't use pin 13 for write enable (which is used by the Arduino during boot to blink the builtin LED). Instead we use the digital output of analog pins A0 to A2 to control the EEPROM chip enable, write enable and output enable pins.
 - Add 10k resistors to pull down the shift register inputs do they don't float wildly while the Arduino is starting
 - Add 10k resistors to pull up the enable pins of the EEPROM (chip enable, write enable and output enable) to make it more reliable (especially when arduino is starting up). 
 
@@ -31,7 +31,7 @@ The available commands are:
 
     eeprom dump [ADDRESS [LENGTH]]
 
-Sends the contents of the EEPROM to the standard output formatted as traditional hexdump output. Examples:
+Sends the contents of the EEPROM to the standard output formatted as traditional hexdump output. The default `ADDRESS` is `0` and the default `LENGTH` to the end of the EEPROM.  Examples:
 
     ./eeprom dump              # the whole EEPROM
     ./eeprom dump 0 64         # 64 bytes starting at address 0
@@ -42,7 +42,7 @@ Sends the contents of the EEPROM to the standard output formatted as traditional
 
     eeprom read FILE [ADDRESS [LENGTH]]
 
-Reads the contents of the EEPROM and writes the data to a file. Examples:
+Reads the contents of the EEPROM and writes the data to a file.  The default `ADDRESS` is `0` and the default `LENGTH` is the length of the file.  Examples:
 
     ./eeprom read file.bin           # the whole EEPROM
     ./eeprom read file.bin 0 64      # the first 64 bytes
@@ -51,9 +51,9 @@ Reads the contents of the EEPROM and writes the data to a file. Examples:
 
 #### Write file to EEPROM
 
-    eeprom read FILE [ADDRESS]
+    eeprom write FILE [ADDRESS]
 
-Writes the whole contents of a file to the EEPROM. Examples:
+Writes the whole contents of a file to the EEPROM.  The default `ADDRESS` is 0.  Examples:
 
     ./eeprom write file.bin          # writes to start of the EEPROM
     ./eeprom write file.bin 0x400    # writes to the address 1024 (0x400)
@@ -71,20 +71,22 @@ is written to the serial port at the start and after every command is executed s
 
 is written to the serial port.
 
+The available commands are:
+
 #### Dump
 
     d ADDRESS LENGTH
 
-Read data from `ADDRESS` to `ADDRESS+LENGTH` and send it to the serial it in a classic "hexdump" format. Both numbers must be in hexadecimal.
+Reads data from `ADDRESS` to `ADDRESS+LENGTH` and sends it to the serial it in a classic "hexdump" format. Both numbers must be in hexadecimal.
 
 #### Read
 
     r ADDRESS LENGTH
 
-Read data from `ADDRESS` to `ADDRESS+LENGTH` and send it to the serial it in a stream of hex digits with no formatting. Both numbers must be in hexadecimal.
+Reads data from `ADDRESS` to `ADDRESS+LENGTH` and sends it to the serial it in a stream of hex digits with no formatting. Both numbers must be in hexadecimal.
 
 #### Write
 
     w ADDRESS LENGTH
 
-Reads `LENGTH` pairs of hex digits (each pair representing a byte) and writes the bytes to the EEPROM starting at address `ADDRESS`. Both numbers must be in hexadecimal. I the data is not sent in 5 seconds, a timeout error is written to the serial and no data is written.
+Reads `LENGTH` pairs of hex digits (each pair representing a byte) from the serial and writes the bytes to the EEPROM starting at address `ADDRESS`. Both numbers must be in hexadecimal. I the data is not sent in 5 seconds, a timeout error is written to the serial and no data is written.
