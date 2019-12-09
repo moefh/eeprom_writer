@@ -27,11 +27,11 @@ const char *get_read_file_error_message(int code)
   return NULL; // shoudn't happen
 }
 
-static long parse_number(const char *str)
+long parse_number(const char *str)
 {
   char *end;
   long n = strtol(str, &end, 0);
-  if (end == str) {
+  if (end == str || *end != '\0') {
     return -1;
   }
   return n;
@@ -121,6 +121,8 @@ int read_file(struct file_data *data, const char *filename)
   
 err:
   free(buf);
-  fclose(f);
+  if (f) {
+    fclose(f);
+  }
   return ret;
 }

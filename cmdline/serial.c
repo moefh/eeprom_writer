@@ -12,9 +12,9 @@ static const struct {
   int err;
   const char *msg;
 } serial_errors[] = {
-  { SERIAL_ERR_BAD_SPEED,    "invalid speed" },
-  { SERIAL_ERR_OPEN_DEVICE,  "can't open device" },
-  { SERIAL_ERR_SETUP_DEVICE, "can't setup device" },
+  { SERIAL_ERR_BAD_SPEED,    "invalid serial port speed" },
+  { SERIAL_ERR_OPEN_DEVICE,  "can't open serial port" },
+  { SERIAL_ERR_SETUP_DEVICE, "can't setup serial port" },
   { 0, NULL }
 };
 

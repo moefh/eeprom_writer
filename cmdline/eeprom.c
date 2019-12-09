@@ -3,10 +3,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 #include <unistd.h>
 #include <errno.h>
 
 #include "eeprom.h"
+#include "util.h"
+
+#define DEFAULT_PORT  "/dev/ttyUSB0"
+#define DEFAULT_SPEED 115200
 
 struct command {
   const char *cmd;
@@ -27,15 +32,15 @@ static void print_help(char *progname)
   printf("\n");
   printf("options:\n");
   printf("  -h                        show this help\n");
-  printf("  -port PORT                set serial port (default: /dev/ttyUSB0)\n");
-  printf("  -speed SPEED              set serial speed (default: 115200)\n");
+  printf("  -port PORT                set serial port (default: %s)\n", DEFAULT_PORT);
+  printf("  -speed SPEED              set serial speed (default: %d)\n", DEFAULT_SPEED);
   printf("\n");
   printf("commands:\n");
   printf("  dump  [ADDR [LEN]]        show EEPROM data\n");
   printf("  read  FILE [ADDR [LEN]]   copy EEPROM to file\n");
   printf("  write FILE [ADDR]         copy file to EEPROM\n");
   printf("\n");
-  printf("Source code available at: https://github.com/moefh/eeprom\n");
+  printf("Source code available at: https://github.com/moefh/eeprom_writer\n");
 }
 
 static int parse_cmdline(int argc, char *argv[], struct cmdline *opt)
@@ -47,11 +52,16 @@ static int parse_cmdline(int argc, char *argv[], struct cmdline *opt)
           printf("%s: '-speed' requires an argument\n", argv[0]);
           return -1;
         }
-        opt->speed = atoi(argv[i+1]);
+        long n = parse_number(argv[i+1]);
+        if (n < 0 || n > INT_MAX) {
+          printf("%s: invalid speed: '%s'\n", argv[0], argv[i+1]);
+          return -1;
+        }
+        opt->speed = (int) n;
         i++;
       } else if (strcmp(argv[i] + 1, "port") == 0) {
         if (argv[i+1] == NULL) {
-          printf("%s: '-speed' requires an argument\n", argv[0]);
+          printf("%s: '-port' requires an argument\n", argv[0]);
           return -1;
         }
         opt->port = argv[i+1];
@@ -96,8 +106,8 @@ static void run_command(char *progname, struct cmdline *options)
 int main(int argc, char *argv[])
 {
   struct cmdline options = {
-    .port  = "/dev/ttyUSB0",
-    .speed = 115200,
+    .port  = DEFAULT_PORT,
+    .speed = DEFAULT_SPEED,
   };
 
   if (parse_cmdline(argc, argv, &options) != 0) {

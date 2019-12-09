@@ -18,6 +18,7 @@ struct file_data {
   size_t size;
 };
 
+long parse_number(const char *str);
 int parse_eeprom_address(struct eeprom_range *range, char **options);
 int parse_eeprom_range(struct eeprom_range *out, char **options);
 int read_file(struct file_data *data, const char *filename);
