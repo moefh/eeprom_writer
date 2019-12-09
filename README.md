@@ -42,7 +42,7 @@ Sends the contents of the EEPROM to the standard output formatted as traditional
 
     eeprom read FILE [ADDRESS [LENGTH]]
 
-Reads the contents of the EEPROM and writes the data to a file.  The default `ADDRESS` is `0` and the default `LENGTH` is the length of the file.  Examples:
+Reads the contents of the EEPROM and writes the data to a file.  The default `ADDRESS` is `0` and the default `LENGTH` is the length of the EEPROM.  Examples:
 
     ./eeprom read file.bin           # the whole EEPROM
     ./eeprom read file.bin 0 64      # the first 64 bytes
