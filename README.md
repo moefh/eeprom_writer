@@ -17,6 +17,14 @@ The circuit is heavily based on Ben Eater's [circuit](https://www.youtube.com/wa
 
 <img src="/doc/schematic.png" width="400" alt="Schematic">
 
+NOTE: the image above shows wrong conections between Arduino pins D2-D4 and the left 74HC595. The correct connections are:
+
+| Arduino | 74HC595    |
+| ------- | ---------- |
+| D2      | 14 (SER)   |
+| D3      | 11 (SRCLK) |
+| D4      | 12 (RCLK)  |
+
 
 <img src="/doc/breadboard.jpg" width="400" alt="Breadboard Photo">
 
